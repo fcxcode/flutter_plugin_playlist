@@ -502,13 +502,13 @@ static char kPlayerItemTimeRangesContext;
     [self initializeMPCommandCenter];
     [[self avQueuePlayer] play];
 
-    if (_resetStreamOnPause) {
-        AudioTrack* currentTrack = (AudioTrack*)[self avQueuePlayer].currentItem;
-        if (currentTrack != nil && currentTrack.isStream) {
-            [[self avQueuePlayer] seekToTime:kCMTimePositiveInfinity toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-            [currentTrack seekToTime:kCMTimePositiveInfinity toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:nil];
-        }
-    }
+    // if (_resetStreamOnPause) {
+    //     AudioTrack* currentTrack = (AudioTrack*)[self avQueuePlayer].currentItem;
+    //     if (currentTrack != nil && currentTrack.isStream) {
+    //         [[self avQueuePlayer] seekToTime:kCMTimePositiveInfinity toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    //         [currentTrack seekToTime:kCMTimePositiveInfinity toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero completionHandler:nil];
+    //     }
+    // }
 
     [self avQueuePlayer].rate = self.rate;
     [self avQueuePlayer].volume = self.volume;
@@ -699,31 +699,36 @@ static char kPlayerItemTimeRangesContext;
  *
  */
 
-- (void) playEvent:(MPRemoteCommandEvent *)event {
+- (MPRemoteCommandHandlerStatus) playEvent:(MPRemoteCommandEvent *) event {
     [self playCommand:YES];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) pauseEvent:(MPRemoteCommandEvent *)event {
+- (MPRemoteCommandHandlerStatus) pauseEvent:(MPRemoteCommandEvent *) event {
     [self pauseCommand:YES];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) togglePlayPauseTrackEvent:(MPRemoteCommandEvent *)event {
+- (MPRemoteCommandHandlerStatus) togglePlayPauseTrackEvent:(MPRemoteCommandEvent *) event {
     if ([self avQueuePlayer].isPlaying) {
         [self pauseCommand:YES];
     } else {
         [self playCommand:YES];
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) prevTrackEvent:(MPRemoteCommandEvent *)event {
+- (MPRemoteCommandHandlerStatus) prevTrackEvent:(MPRemoteCommandEvent *)event {
     [self playPrevious:YES];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) nextTrackEvent:(MPRemoteCommandEvent *)event {
+- (MPRemoteCommandHandlerStatus) nextTrackEvent:(MPRemoteCommandEvent *) event {
     [self playNext:YES];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (MPRemoteCommandHandlerStatus) changedThumbSliderOnLockScreen:(MPChangePlaybackPositionCommandEvent *)event {
+- (MPRemoteCommandHandlerStatus) changedThumbSliderOnLockScreen:(MPChangePlaybackPositionCommandEvent *) event {
     [self seekTo:event.positionTime isCommand:YES];
     return MPRemoteCommandHandlerStatusSuccess;
 }
@@ -1179,7 +1184,8 @@ static char kPlayerItemTimeRangesContext;
 
 - (void) initializeMPCommandCenter
 {
-    if (!_commandCenterRegistered) {
+    if (_commandCenterRegistered == NO) {
+        _commandCenterRegistered = YES;
         //[self.viewController becomeFirstResponder]; // supposedly this is no longer necessary.
 
         MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
@@ -1198,8 +1204,6 @@ static char kPlayerItemTimeRangesContext;
             [commandCenter.changePlaybackPositionCommand setEnabled:true];
             [commandCenter.changePlaybackPositionCommand addTarget:self action:@selector(changedThumbSliderOnLockScreen:)];
         }
-
-        _commandCenterRegistered = YES;
     }
 }
 

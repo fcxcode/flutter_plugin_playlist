@@ -65,7 +65,7 @@ class RmxAudioPlayer {
 
   /// True if the playlist is currently paused
   get isPaused {
-    return this._currentState == 'paused' || this._currentState == 'stopped';
+    return this._currentState == 'paused';
   }
 
   /// True if the plugin is currently loading its ///current/// track.

@@ -174,9 +174,9 @@
 
 -(void)play
 {
-    if ([self isAtEnd]) { // we could add a flag here to indicate looping
-        [self setCurrentIndex:0];
-    }
+    // if ([self isAtEnd]) { // we could add a flag here to indicate looping
+    //     [self setCurrentIndex:0];
+    // }
 
     [super play];
 }
