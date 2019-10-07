@@ -195,6 +195,7 @@ static char kPlayerItemTimeRangesContext;
 - (void) clearAllItems:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSLog(@"RmxAudioPlayer.execute=clearAllItems");
     [self removeAllTracks:NO];
+    [self deregisterMusicControlsEventListener];
 
     result([NSNumber numberWithBool:YES]);
 }
