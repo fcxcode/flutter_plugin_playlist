@@ -38,13 +38,20 @@ public class FlutterPluginPlaylistPlugin implements MethodCallHandler, RmxConsta
 
   private boolean resetStreamOnPause = true;
 
+  private static Application getApplicationUsingReflection() throws Exception {
+    return (Application) Class.forName("android.app.AppGlobals")
+            .getMethod("getInitialApplication").invoke(null, (Object[]) null);
+  }
+
   private FlutterPluginPlaylistPlugin(MethodChannel channel) {
       this.channel = channel;
   }
 
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
-    PlaylistManager.init(registrar.activity().getApplication());
+    try {
+      PlaylistManager.init(FlutterPluginPlaylistPlugin.getApplicationUsingReflection());
+    } catch (Exception e) {}
 
     MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_plugin_playlist");
 

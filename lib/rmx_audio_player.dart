@@ -163,6 +163,11 @@ class RmxAudioPlayer {
         {'items': this._validateTracks(items), 'options': options?.toJson()});
   }
 
+  Future<dynamic> setPlaylistDinamicItems(List<dynamic> items, {PlaylistItemOptions options}) {
+    final audioTracks = items.map((item) => AudioTrack.fromJson(item)).toList();
+    return setPlaylistItems(audioTracks, options: options);
+  }
+
   /// Add a single track to the end of the playlist
   Future<dynamic> addItem(AudioTrack trackItem, {int index}) async {
     var validTrackItem = this._validateTrack(trackItem);
